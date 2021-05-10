@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Container, Form } from 'react-bootstrap'
+import { Container, Form, ListGroup } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node'
 import useAuth from './useAuth'
 import Player from './Player'
@@ -94,6 +94,7 @@ export default function Dashboard({ code }) {
       />
 
       <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
+        <ListGroup>
         {searchResults.map(track => (
           <TrackSearchResult
             track={track}
@@ -101,6 +102,7 @@ export default function Dashboard({ code }) {
             addToQueue={addToQueue}
           />
         ))}
+        </ListGroup>
       </div>
 
       <Queue queue={queue} />
