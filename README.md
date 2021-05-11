@@ -4,16 +4,18 @@ Anna Griffin(agriffin@olin.edu), Sherrie Shen(xshen@olin.edu) <br>
 To run this project, first run
 ```
 cd server/
-npm start
+npm install && npm start
 ```
 
 then in a new terminal window, run
 ```
 cd client/
-npm start
+npm install && npm start
 ```
 
 Once the client page finishes loading, log in with your spotify credentials.
+
+(If the client page doesn't open up automatically, you can go to [http://localhost:3000/](http://localhost:3000/))
 
 ## Tech Stack
 * [Spotify Web Playback SDK](https://developer.spotify.com/documentation/web-playback-sdk/)
