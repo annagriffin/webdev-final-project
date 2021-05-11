@@ -189,7 +189,9 @@ export default function Dashboard({ code }) {
       <Row>
         <Container>
           <Row>
-            <Col><h4>Queue</h4>
+            <Col>
+            <h4>Queue</h4>
+            <div className="overflow-auto" style={{ maxHeight: "255px"}}>
 
               <DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId="songqueue">
@@ -200,7 +202,7 @@ export default function Dashboard({ code }) {
                     </div>
                   )}
                 </Droppable>
-              </DragDropContext>
+              </DragDropContext></div>
             </Col>
             <Col xs={3}>
               <h4>Quick Adds</h4>
