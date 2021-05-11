@@ -8,6 +8,7 @@ import Controller from './Controller'
 import { TiMediaPlay, TiMediaPause, TiDeviceLaptop } from 'react-icons/ti'
 import QueueItem from './QueueItem'
 import Queue from './Queue'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 const spotifyApi = new SpotifyWebApi({
   clientId: 'a9fef7a2a0734ac5bd9a6f827573ed78'
@@ -29,6 +30,16 @@ export default function Dashboard({ code }) {
 
   }, [accessToken])
 
+  useEffect(() => {
+    if (!queue) return setQueue([])
+    if (!accessToken) return
+
+
+    setPlayingTrack(queue[0]);
+    // setQueue(queue.slice(1, queue.length))
+
+  }, [queue])
+
 
   function addToQueue(track) {
     setQueue([...queue, track])
@@ -36,10 +47,14 @@ export default function Dashboard({ code }) {
   }
 
   function playNewSong() {
-    if (queue.length > 1) {
-      setPlayingTrack(queue[0]);
-      setQueue(queue.slice(1, queue.length))
-    }
+
+    const tempQueue = queue.slice(1, queue.length)
+    setQueue(tempQueue)
+    
+    // if (queue.length > 1) {
+    //   console.log(queue)
+    //   setPlayingTrack(queue[0]);
+    // }
 
   }
 
@@ -72,17 +87,26 @@ export default function Dashboard({ code }) {
   }, [search, accessToken])
 
 
-  useEffect(() => {
-    if (!queue) return setQueue([])
-    if (!accessToken) return
 
-    console.log(queue[0])
 
-    setPlayingTrack(queue[0]);
-    // setQueue(queue.slice(1, queue.length))
+  
+  function handleOnDragEnd(result) {
+    if (!result.destination) {
+      return;
+    }
 
-  }, [queue])
+    if (result.destination.index === result.source.index) {
+      return;
+    }
 
+
+    const items = Array.from(queue);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setQueue(items)
+    // console.log(queue)
+  }
 
   return (
     <Container className="d-flex flex-column py-2" style={{ height: "100vh" }}>
@@ -95,17 +119,26 @@ export default function Dashboard({ code }) {
 
       <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
         <ListGroup>
-        {searchResults.map(track => (
-          <TrackSearchResult
-            track={track}
-            key={track.uri}
-            addToQueue={addToQueue}
-          />
-        ))}
+          {searchResults.map(track => (
+            <TrackSearchResult
+              track={track}
+              key={track.uri}
+              addToQueue={addToQueue}
+            />
+          ))}
         </ListGroup>
       </div>
 
-      <Queue queue={queue} />
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="songqueue">
+          {provided => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              <Queue queue={queue} />
+              {provided.placeholder}
+              </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       <div><Player accessToken={accessToken} trackUri={playingTrack?.uri} q={queue} nextSong={playNewSong} /></div>
 
