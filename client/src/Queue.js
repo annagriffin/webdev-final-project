@@ -6,7 +6,7 @@ export default function Queue({ queue }) {
   return queue.map((item, index) => (
         <QueueItem
           item={item}
-          index={index}
+          index={index+1}
           key={item.uri}
         />
      ))

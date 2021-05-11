@@ -5,7 +5,7 @@ import { Draggable } from 'react-beautiful-dnd'
 
 export default function QueueItem({ item, index }) {
   return (
-    <Draggable draggableId={item.uri} index={index} isDragDisabled={index == 0 ? true : false}>
+    <Draggable draggableId={item.uri} index={index} >
       { provided => (
 
         <Card ref={provided.innerRef}
