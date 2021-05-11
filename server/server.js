@@ -1,3 +1,6 @@
+const connectSocket = require('spotify-connect-ws')
+const socketio = require('socket.io')
+
 require('dotenv').config
 const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node');
@@ -49,4 +52,9 @@ app.post('/login', (req, res) => {
   })
 })
 
-app.listen(3001)
+const port = process.env.PORT || 3001
+const server = app.listen(port, () => {console.log('Listening on port: ' + port)})
+const io = socketio(server);
+io.of('connect').on('connection', function(connectSocket){
+  console.log('a user connected');
+});

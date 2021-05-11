@@ -19,7 +19,7 @@ export default function Player({ accessToken, trackUri, nextSong }) {
         token={accessToken}
         play={play}
         callback={state => {
-          if (!state.isPlaying && state.position == 0) {
+          if (!state.isPlaying && state.position === 0) {
             nextSong()
           } else if (!state.isPlaying) {
               setPlay(false)
