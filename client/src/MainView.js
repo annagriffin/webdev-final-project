@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 
 export default function MainView({ code }) {
   return (
-    <Container className="m-0" style={{ maxWidth: "none" }}>
+    <Container className="m-0  vh-100" style={{ maxWidth: "none" }}>
       <Row>
         <Col xs={2}>
           <SideBar />

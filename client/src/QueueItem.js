@@ -25,7 +25,7 @@ export default function QueueItem({ item, index }) {
               <Col xs={1}>
                 <img src={item.albumUrl} style={{ height: "24px", width: "24px" }} />
               </Col>
-              <Col xs={5}>
+              <Col xs={6}>
                 <div>{item.title}</div>
               </Col>
               <Col xs={4}>
@@ -35,12 +35,7 @@ export default function QueueItem({ item, index }) {
               <Col sx={1}>
                 {toMs(item.duration)}
           </Col>
-              <Col sx={1}>
-                <ButtonGroup>
-                  <TiTimes />
-                </ButtonGroup>
-              </Col>
-
+              
             </Row>
           </Card.Body>
         </Card>
