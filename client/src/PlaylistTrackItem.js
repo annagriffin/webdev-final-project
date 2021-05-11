@@ -1,5 +1,4 @@
 import React from 'react'
-import { Dropdown, ListGroup } from 'react-bootstrap'
 
 export default function PlaylistTrackItem({ track, addToQueue }) {
 

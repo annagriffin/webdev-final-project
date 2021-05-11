@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Container, Form, ListGroup, Row, Col, Card, Dropdown, Accordion } from 'react-bootstrap'
+import { Container, Form, ListGroup, Row, Col, Card, Dropdown, Accordion, CardDeck } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node'
 import useAuth from './useAuth'
 import Player from './Player'
 import TrackSearchResult from './TrackSearchResult'
-import Controller from './Controller'
-import { TiMediaPlay, TiMediaPause, TiDeviceLaptop } from 'react-icons/ti'
-import QueueItem from './QueueItem'
 import Queue from './Queue'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
-import axios from 'axios'
 import PlaylistTrackItem from './PlaylistTrackItem'
+import TopTrackItem from './TopTrackItem'
 
 const spotifyApi = new SpotifyWebApi({
   clientId: 'a9fef7a2a0734ac5bd9a6f827573ed78'
@@ -23,9 +20,9 @@ export default function Dashboard({ code }) {
   const [playingTrack, setPlayingTrack] = useState()
   const [playlists, setPlaylists] = useState([])
   const [queue, setQueue] = useState([])
-  const [deviceId, setDeviceId] = useState("")
   const [user, setUser] = useState()
   const [currentPlaylistTracks, setCurrentPlaylistTracks] = useState([])
+  const [topTracks, setTopTracks] = useState([])
 
 
   useEffect(() => {
@@ -45,7 +42,6 @@ export default function Dashboard({ code }) {
     return spotifyApi.getPlaylistTracks(uri)
       .then((res) => {
         setCurrentPlaylistTracks(res.body.items.map(track => {
-          console.log(track)
           const smallestAlbumImages = track.track.album.images.reduce((smallest, image) => {
             if (image.height < smallest.height) return image
             return smallest
@@ -62,9 +58,6 @@ export default function Dashboard({ code }) {
   }
 
 
-
-
-
   useEffect(() => {
     if (!accessToken || !user) return
 
@@ -73,15 +66,29 @@ export default function Dashboard({ code }) {
         setPlaylists(data.body.items)
         return data.body.items
       })
-    // spotifyApi.getUserPlaylists(user.id, {limit: 5})
-    //   .then((data) => {
-    //     setPlaylists(data.body.items)
-    //     console.log(data.body.items)
-    //     return data.body.items
-    //   }).then((res) => {
+      .then(() => {
+        spotifyApi.getMyTopTracks({ limit: 8})
+        .then((res) => {
+          setTopTracks(res.body.items.map(track => {
 
-    //    
-    //   })
+            const smallestAlbumImages = track.album.images.reduce((smallest, image) => {
+              if (image.height < smallest.height) return image
+              return smallest
+            }, track.album.images[0])
+  
+            return {
+              artist: track.artists[0].name,
+              title: track.name,
+              uri: track.uri,
+              albumUrl: smallestAlbumImages.url,
+              duration: track.duration_ms
+            }
+          }))
+        })
+      })
+
+    /* Get a User’s Top Tracks*/
+    
 
   }, [user])
 
@@ -106,11 +113,6 @@ export default function Dashboard({ code }) {
 
     const tempQueue = queue.slice(1, queue.length)
     setQueue(tempQueue)
-
-    // if (queue.length > 1) {
-    //   console.log(queue)
-    //   setPlayingTrack(queue[0]);
-    // }
 
   }
 
@@ -181,22 +183,18 @@ export default function Dashboard({ code }) {
             ))}
           </ListGroup>
         ) : (<div></div>)}
-
       </Row>
-
-
 
       <Row>
         <Container>
           <Row>
             <Col>
             <h4>Queue</h4>
-            <div className="overflow-auto" style={{ maxHeight: "255px"}}></div>
 
-              <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="songqueue">
+              <DragDropContext  onDragEnd={handleOnDragEnd}>
+                <Droppable  droppableId="songqueue">
                   {provided => (
-                    <div className="p-0" ref={provided.innerRef} {...provided.droppableProps}>
+                    <div className="p-0 overflow-auto" style={{ maxHeight: "255px"}} ref={provided.innerRef} {...provided.droppableProps}>
                       <Queue queue={queue.slice(1, queue.length)} />
                       {provided.placeholder}
                     </div>
@@ -233,9 +231,29 @@ export default function Dashboard({ code }) {
                   ))}
                 </Card>
 
-
               </Accordion>
             </Col>
+          </Row>
+          <Row>
+            <Col>
+            <h4>Top Tracks</h4>
+            <CardDeck>
+              <Row>
+              {topTracks.map(track => (
+                <Col className="pe-0" key={track.id}>
+                  <TopTrackItem
+                      track={track}
+                      addToQueue={addToQueue}
+                                />
+                  </Col>
+
+              ))}
+              </Row>
+
+            </CardDeck>
+
+            </Col>
+
           </Row>
 
         </Container>
@@ -243,8 +261,6 @@ export default function Dashboard({ code }) {
       <Row className="w-100 position-absolute bottom-0">
         <Player accessToken={accessToken} trackUri={playingTrack?.uri} q={queue} nextSong={playNewSong} />
       </Row>
-
-      {/* <div><Controller accessToken={accessToken} /></div> */}
     </Container>
   )
 }
