@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Container, Form, ListGroup } from 'react-bootstrap'
+import { Container, Form, ListGroup, Row, Col, Card, Dropdown } from 'react-bootstrap'
 import SpotifyWebApi from 'spotify-web-api-node'
 import useAuth from './useAuth'
 import Player from './Player'
@@ -50,7 +50,7 @@ export default function Dashboard({ code }) {
 
     const tempQueue = queue.slice(1, queue.length)
     setQueue(tempQueue)
-    
+
     // if (queue.length > 1) {
     //   console.log(queue)
     //   setPlayingTrack(queue[0]);
@@ -89,7 +89,7 @@ export default function Dashboard({ code }) {
 
 
 
-  
+
   function handleOnDragEnd(result) {
     if (!result.destination) {
       return;
@@ -109,16 +109,15 @@ export default function Dashboard({ code }) {
   }
 
   return (
-    <Container className="d-flex flex-column py-2" style={{ height: "100vh" }}>
-      <Form.Control
-        type="search"
-        placeholder="Search Songs/Artists"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
-
-      <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
-        <ListGroup>
+    <Container className="position-relative vh-100">
+      <Row>
+        <Form.Control
+          type="search"
+          placeholder="Search Songs/Artists"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <ListGroup className="overflow-auto" style={{ height: "400px" }}>
           {searchResults.map(track => (
             <TrackSearchResult
               track={track}
@@ -127,20 +126,30 @@ export default function Dashboard({ code }) {
             />
           ))}
         </ListGroup>
-      </div>
+      </Row>
 
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="songqueue">
-          {provided => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              <Queue queue={queue} />
-              {provided.placeholder}
-              </div>
-          )}
-        </Droppable>
-      </DragDropContext>
 
-      <div><Player accessToken={accessToken} trackUri={playingTrack?.uri} q={queue} nextSong={playNewSong} /></div>
+
+      <Row>
+        <Container>
+          <h4>Queue</h4>
+
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            <Droppable droppableId="songqueue">
+              {provided => (
+                <div className="p-0" ref={provided.innerRef} {...provided.droppableProps}>
+                  <Queue queue={queue} />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+
+        </Container>
+      </Row>
+      <Row className="w-100 position-absolute bottom-0">
+        <Player accessToken={accessToken} trackUri={playingTrack?.uri} q={queue} nextSong={playNewSong} />
+      </Row>
 
       {/* <div><Controller accessToken={accessToken} /></div> */}
     </Container>
