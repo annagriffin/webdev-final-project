@@ -91,7 +91,7 @@ export default function Dashboard({ code }) {
 
 
   function handleOnDragEnd(result) {
-    if (!result.destination) {
+    if (!result.destination || result.destination.index === 0) {
       return;
     }
 

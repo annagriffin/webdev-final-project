@@ -5,13 +5,13 @@ import { Draggable } from 'react-beautiful-dnd'
 
 export default function QueueItem({ item, index }) {
   return (
-    <Draggable draggableId={item.uri} index={index}>
+    <Draggable draggableId={item.uri} index={index} isDragDisabled={index == 0 ? true : false}>
       { provided => (
 
         <Card ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}>
-          <Card.Body>
+          <Card.Body className="p-2">
             {/* <div className="d-flex m-1 align-items-center"> */}
             <Row>
               <Col xs={1}>
