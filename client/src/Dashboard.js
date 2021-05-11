@@ -117,15 +117,18 @@ export default function Dashboard({ code }) {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <ListGroup className="overflow-auto" style={{ height: "400px" }}>
-          {searchResults.map(track => (
-            <TrackSearchResult
-              track={track}
-              key={track.uri}
-              addToQueue={addToQueue}
-            />
-          ))}
-        </ListGroup>
+        {searchResults.length > 0 ? (
+            <ListGroup className="overflow-auto position-absolute" style={{ top: "38px", height: "400px", zIndex: 1000 }}>
+            {searchResults.map(track => (
+              <TrackSearchResult
+                track={track}
+                key={track.uri}
+                addToQueue={addToQueue}
+              />
+            ))}
+          </ListGroup>
+        ) : (<div></div>)}
+        
       </Row>
 
 
