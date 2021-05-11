@@ -14,8 +14,6 @@ export default function MainView({ code }) {
           <Dashboard code={code} />
         </Col>
       </Row>
-
-
     </Container>
   )
 }

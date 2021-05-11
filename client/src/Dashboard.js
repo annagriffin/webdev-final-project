@@ -38,7 +38,6 @@ export default function Dashboard({ code }) {
 
 
   function getTracks(uri) {
-
     return spotifyApi.getPlaylistTracks(uri)
       .then((res) => {
         setCurrentPlaylistTracks(res.body.items.map(track => {
@@ -58,6 +57,7 @@ export default function Dashboard({ code }) {
   }
 
 
+  {/* Get user playlists and top tracks*/}
   useEffect(() => {
     if (!accessToken || !user) return
 
@@ -70,7 +70,6 @@ export default function Dashboard({ code }) {
         spotifyApi.getMyTopTracks({ limit: 8})
         .then((res) => {
           setTopTracks(res.body.items.map(track => {
-
             const smallestAlbumImages = track.album.images.reduce((smallest, image) => {
               if (image.height < smallest.height) return image
               return smallest
@@ -87,12 +86,10 @@ export default function Dashboard({ code }) {
         })
       })
 
-    /* Get a User’s Top Tracks*/
-    
-
   }, [user])
 
 
+  
   useEffect(() => {
     if (!queue) return setQueue([])
     if (!accessToken) return
@@ -104,30 +101,30 @@ export default function Dashboard({ code }) {
   }, [queue])
 
 
+  // add songs to the queue
   function addToQueue(track) {
     setQueue([...queue, track])
     setSearch("")
   }
 
+  // update the queue and play next
   function playNewSong() {
 
     const tempQueue = queue.slice(1, queue.length)
     setQueue(tempQueue)
-
   }
 
 
+  // search bar 
   useEffect(() => {
     if (!search) return setSearchResults([])
     if (!accessToken) return
 
     let cancel = false
-
     spotifyApi.searchTracks(search)
       .then(res => {
         if (cancel) return
         setSearchResults(res.body.tracks.items.map(track => {
-
           const smallestAlbumImages = track.album.images.reduce((smallest, image) => {
             if (image.height < smallest.height) return image
             return smallest
@@ -243,8 +240,7 @@ export default function Dashboard({ code }) {
                 <Col className="pe-0" key={track.id}>
                   <TopTrackItem
                       track={track}
-                      addToQueue={addToQueue}
-                                />
+                      addToQueue={addToQueue}/>
                   </Col>
 
               ))}

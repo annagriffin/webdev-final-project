@@ -20,7 +20,6 @@ export default function QueueItem({ item, index }) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}>
           <Card.Body className="p-2">
-            {/* <div className="d-flex m-1 align-items-center"> */}
             <Row>
               <Col xs={1}>
                 <img src={item.albumUrl} style={{ height: "24px", width: "24px" }} />
