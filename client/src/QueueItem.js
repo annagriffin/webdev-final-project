@@ -4,6 +4,14 @@ import { TiTimes, TiThMenu } from 'react-icons/ti'
 import { Draggable } from 'react-beautiful-dnd'
 
 export default function QueueItem({ item, index }) {
+
+  function toMs(ms) {
+      console.log(ms)
+      let minutes = Math.floor((ms / 1000) / 60)
+      let seconds = Math.floor((ms / 1000) % 60)
+      return `${minutes}:${seconds}` 
+
+  }
   return (
     <Draggable draggableId={item.uri} index={index} >
       { provided => (
@@ -25,12 +33,11 @@ export default function QueueItem({ item, index }) {
                   className="text-muted">{item.artist}</div>
               </Col>
               <Col sx={1}>
-                23:40
+                {toMs(item.duration)}
           </Col>
               <Col sx={1}>
                 <ButtonGroup>
                   <TiTimes />
-                  <TiThMenu />
                 </ButtonGroup>
               </Col>
 
